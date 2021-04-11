@@ -12,5 +12,5 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class TriggerVO {
-    List<ConditionVO> conditions;
+    private List<ConditionVO> conditions;
 }

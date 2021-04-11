@@ -53,7 +53,4 @@ public class SpringContextUtil implements ApplicationContextAware {
         }
     }
 
-    public static <T> T getBeanByClazzAsConvention(String clazz) {
-        return getBean(getBeanNameOfClazzAsConvention(clazz));
-    }
 }

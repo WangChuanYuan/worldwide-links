@@ -5,32 +5,60 @@ import org.tze.ruleservice.vo.ConditionVO;
 import org.tze.ruleservice.vo.RuleVO;
 import org.tze.ruleservice.vo.TriggerVO;
 
+import java.io.IOException;
 import java.time.format.DateTimeFormatter;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public class DrlUtil {
 
-    public static StringBuffer insertImportDrl(StringBuffer drlBuffer){
+    public static StringBuffer insertPackageAndGlobal(StringBuffer drlBuffer) {
+        drlBuffer.append("package org.tze.ruleservice.dsl;").append(System.lineSeparator());
+        drlBuffer.append("global java.util.List $results;").append(System.lineSeparator());
+        // 全局行为对象作为服务
+        PackageScanner scan = new PackageScanner("org.tze.ruleservice.action.impl");
+        try {
+            List<String> actionClazz  = scan.getFullyQualifiedClassNameList();
+            for (String clazz : actionClazz) {
+                String beanName = SpringContextUtil.getBeanNameOfClazzAsConvention(clazz);
+                drlBuffer.append("global ").append(clazz).
+                        append(" $action_").append(beanName).append(";").append(System.lineSeparator());
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return drlBuffer;
+    }
+
+    public static StringBuffer insertImport(StringBuffer drlBuffer){
         // 导入基本类
         drlBuffer.append("import java.lang.*;").append(System.lineSeparator());
         drlBuffer.append("import java.util.Map;").append(System.lineSeparator());
         drlBuffer.append("import java.util.HashMap;").append(System.lineSeparator());
         drlBuffer.append("import java.util.List;").append(System.lineSeparator());
 
-        // 导入动作类
+        // 导入行为类
         drlBuffer.append("import org.tze.ruleservice.action.RuleAction;").append(System.lineSeparator());
         drlBuffer.append("import org.tze.ruleservice.action.impl.*;").append(System.lineSeparator());
 
         return drlBuffer;
     }
 
-    private static StringBuffer insertRuleNameDrl(StringBuffer drlBuffer, RuleVO rule) {
+    public static StringBuffer insertRuleDrl(StringBuffer drlBuffer, RuleVO rule) {
+        insertRuleName(drlBuffer,rule);
+        insertExpiryDate(drlBuffer, rule);
+        insertRuleCondition(drlBuffer, rule);
+        insertRuleAction(drlBuffer, rule);
+        return drlBuffer;
+    }
+
+    private static StringBuffer insertRuleName(StringBuffer drlBuffer, RuleVO rule) {
         drlBuffer.append("rule").append(" ").append("rule_").append(rule.getId()).append(System.lineSeparator());
         return drlBuffer;
     }
 
-    private static StringBuffer insertExpiryDateDrl(StringBuffer drlBuffer, RuleVO rule) {
+    private static StringBuffer insertExpiryDate(StringBuffer drlBuffer, RuleVO rule) {
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
         if (rule.getBegin() != null) {
             String begin = dtf.format(rule.getBegin());
@@ -45,10 +73,6 @@ public class DrlUtil {
 
     private static StringBuffer insertRuleCondition(StringBuffer drlBuffer, RuleVO rule) {
         drlBuffer.append("when").append(System.lineSeparator());
-        // 拼接规则动作定义
-        for (int i = 0; i < rule.getActions().size(); i++) {
-            drlBuffer.append("$action").append(i).append(":").append("RuleAction()").append(System.lineSeparator());
-        }
         // 拼接规则条件
         if (rule.getTriggers() == null || rule.getTriggers().isEmpty()) {
             drlBuffer.append("eval(true)").append(System.lineSeparator());
@@ -84,7 +108,7 @@ public class DrlUtil {
     }
 
     private static StringBuffer insertRuleAction(StringBuffer drlBuffer, RuleVO rule) {
-        drlBuffer.append("then").append("\n");
+        drlBuffer.append("then").append(System.lineSeparator());
         List<ActionVO> actions = rule.getActions();
         if (actions != null && !actions.isEmpty()) {
             for (int i = 0; i < actions.size(); i++) {
@@ -110,11 +134,12 @@ public class DrlUtil {
                     }
                     drlBuffer.append(");").append(System.lineSeparator());
                 }
-                drlBuffer.append("$action").append(i).append("execute(");
-                drlBuffer.append("$fact, params, $result;").append(System.lineSeparator());
+                drlBuffer.append("$action_").append(action.getName()).append("execute(");
+                drlBuffer.append("$fact, params, $results);").append(System.lineSeparator());
             }
         }
         drlBuffer.append("end").append(System.lineSeparator());
         return drlBuffer;
     }
+
 }

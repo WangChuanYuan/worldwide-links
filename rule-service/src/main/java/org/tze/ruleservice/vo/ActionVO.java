@@ -13,7 +13,7 @@ import java.util.Map;
 @AllArgsConstructor
 public class ActionVO {
 
-    private String actionClazz;
+    private String name;
 
     private Map<String, Object> params;
 }

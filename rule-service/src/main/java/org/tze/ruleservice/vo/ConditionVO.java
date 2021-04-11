@@ -15,6 +15,6 @@ public class ConditionVO {
 
     private String operator;  // == != > < >= <=
 
-    private Object value;
+    private Object value;  // String or Number
 
 }

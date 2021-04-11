@@ -37,8 +37,8 @@ public class DroolsUtil {
         return instance;
     }
 
-    public KieSession getDrlSessionInCache(Long project) {
-        InternalKnowledgeBase kbase = ruleCache.get(project);
+    public KieSession getDrlSessionInCache(Long projectId) {
+        InternalKnowledgeBase kbase = ruleCache.get(projectId);
         if (kbase == null) {
             return null;
         } else {
@@ -46,7 +46,7 @@ public class DroolsUtil {
         }
     }
 
-    public KieSession getDrlSession(Long project, String rule) {
+    public KieSession getDrlSession(Long projectId, String rule) {
         final KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         Reader strReader = new StringReader(rule);
         kbuilder.add(ResourceFactory.newReaderResource(strReader), ResourceType.DRL);
@@ -62,7 +62,7 @@ public class DroolsUtil {
         Collection<KiePackage> pkgs = kbuilder.getKnowledgePackages();
         InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addPackages(pkgs);
-        ruleCache.put(project, kbase);
+        ruleCache.put(projectId, kbase);
         return kbase.newKieSession();
     }
 

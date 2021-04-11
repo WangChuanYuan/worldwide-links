@@ -19,9 +19,9 @@ public class RuleVO {
     private String name;
     private String description;
 
-    private Integer projectId;
+    private Long projectId;
 
-    private List<TriggerVO> triggers;
+    private List<TriggerVO> triggers;  // 不同触发器之间是或的关系，触发器中的条件需要同时满足
     private List<ActionVO> actions;
 
     private LocalDateTime begin;

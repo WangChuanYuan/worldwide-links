@@ -3,6 +3,7 @@ package org.tze.ruleservice.service;
 import org.kie.api.runtime.KieSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.tze.ruleservice.action.RuleAction;
+import org.tze.ruleservice.dao.RuleDAO;
 import org.tze.ruleservice.po.RulePO;
 import org.tze.ruleservice.util.DrlUtil;
 import org.tze.ruleservice.util.DroolsUtil;
@@ -11,6 +12,7 @@ import org.tze.ruleservice.util.SpringContextUtil;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -19,7 +21,7 @@ public class RuleEngine {
     @Autowired
     private RuleDAO ruleDAO;
 
-    private static List<RuleAction> ruleActions = new ArrayList<>();
+    private static Map<String, RuleAction> ruleActions = new HashMap<>();
 
     static{
         System.setProperty("drools.dateformat", "yyyy-MM-dd HH:mm");
@@ -28,7 +30,8 @@ public class RuleEngine {
         try {
             List<String> actionClazz  = scan.getFullyQualifiedClassNameList();
             for (String clazz : actionClazz) {
-                ruleActions.add(SpringContextUtil.getBeanByClazzAsConvention(clazz));
+                String beanName = SpringContextUtil.getBeanNameOfClazzAsConvention(clazz);
+                ruleActions.put(beanName, SpringContextUtil.getBean(beanName));
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -36,7 +39,6 @@ public class RuleEngine {
     }
 
     public List<Map<String, Object>> executeRuleEngine(Long projectId, Map<String, Object> fact) {
-
         KieSession ksession = DroolsUtil.getInstance().getDrlSessionInCache(projectId);
         if (ksession != null) {
             return handleDrlSession(projectId, ksession, fact);
@@ -46,14 +48,14 @@ public class RuleEngine {
     }
 
     private List<Map<String,Object>> handleInEngine(Long projectId, Map<String,Object> fact) {
-        StringBuffer drlBuffer = new StringBuffer("package org.tze.ruleservice.dsl;").append(System.lineSeparator());
-        drlBuffer.append("global java.util.List $result;").append(System.lineSeparator());
+        StringBuffer drlBuffer = new StringBuffer();
+        DrlUtil.insertPackageAndGlobal(drlBuffer);
 
         // 查询项目已有的规则
-        List<RulePO> rules = ruleDAO.getRulesByproject(projectId);
+        List<RulePO> rules = ruleDAO.getByProjectId(projectId);
 
         // import语句
-        DrlUtil.insertImportDrl(drlBuffer);
+        DrlUtil.insertImport(drlBuffer);
         // 规则语句
         for(RulePO rule : rules){
             if (!rule.isEnabled()) continue;
@@ -67,16 +69,19 @@ public class RuleEngine {
     private List<Map<String, Object>> handleDrlSession(Long projectId, KieSession session, Map<String, Object> fact) {
         // 加载事实对象
         session.insert(fact);
-        // 加载全局变量，用于返回结果
-        List<Map<String, Object>> result = new ArrayList<>();
-        session.setGlobal("$result", result);
-        // 加载动作对象
-        for (RuleAction action : ruleActions)
-            session.insert(action);
+        // 加载全局变量
+        // 返回结果
+        List<Map<String, Object>> results = new ArrayList<>();
+        session.setGlobal("$results", results);
+        // 行为服务
+        for (RuleAction action : ruleActions.values()) {
+            String actionName = action.getName();
+            session.setGlobal("$action_" + actionName, action);
+        }
 
         session.fireAllRules();
         session.dispose();
-        return result;
+        return results;
     }
 
 }
