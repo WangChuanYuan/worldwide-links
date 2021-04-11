@@ -22,6 +22,7 @@
         <module>rule-service</module>
         <module>connect-service</module>
         <module>device-service</module>
+        <module>mail-service</module>
     </modules>
 
     <properties>
