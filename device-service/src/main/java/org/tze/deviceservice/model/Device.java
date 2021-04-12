@@ -15,9 +15,14 @@ public class Device {
     private Long projectId;
 
     /**
-     * 产品
+     * 产品簇
      */
     private Long productId;
+
+    /**
+     * 设备
+     */
+    private Long deviceId;
 
     /**
      * 名称
