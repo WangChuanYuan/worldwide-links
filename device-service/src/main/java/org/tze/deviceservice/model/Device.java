@@ -27,7 +27,7 @@ public class Device {
     /**
      * 名称
      */
-    private String name;
+    private String deviceName;
 
     /**
      * Logo
