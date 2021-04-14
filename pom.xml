@@ -23,6 +23,7 @@
         <module>connect-service</module>
         <module>device-service</module>
         <module>mail-service</module>
+        <module>user-service</module>
     </modules>
 
     <properties>
