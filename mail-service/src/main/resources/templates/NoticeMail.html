@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Notice Mail</title>
+</head>
+<body>
+
+<h3>WorldWide-Links通知邮件</h3>
+<!--/*@thymesVar id="fact" type="java.util.Map"*/-->
+<p>根据您设置的规则（id<b th:text="${fact['ruleId']}"/>，<b th:text="${fact['ruleName']}"/>，WorldWide-Links提醒您:</p>
+<table>
+    <!--/*@thymesVar id="fact" type="java.util.Map"*/-->
+    <tr th:each="item,state:${fact}">
+        <td th:text="${state.index}+1"></td>
+        <td th:text="${state.current.key}"></td><!-- key-->
+        <td th:text="${state.current.value}"></td><!-- value-->
+    </tr>
+</table>
+
+</body>
+</html>
