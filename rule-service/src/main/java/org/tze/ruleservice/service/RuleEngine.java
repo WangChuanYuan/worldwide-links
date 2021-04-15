@@ -2,6 +2,7 @@ package org.tze.ruleservice.service;
 
 import org.kie.api.runtime.KieSession;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import org.tze.ruleservice.action.RuleAction;
 import org.tze.ruleservice.dao.RuleDAO;
 import org.tze.ruleservice.po.RulePO;
@@ -16,19 +17,21 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+@Service
 public class RuleEngine {
 
     @Autowired
     private RuleDAO ruleDAO;
 
-    private static Map<String, RuleAction> ruleActions = new HashMap<>();
+    private static Map<String, RuleAction> ruleActions;
 
-    static{
-        System.setProperty("drools.dateformat", "yyyy-MM-dd HH:mm");
+    private void initialize() {
+        System.setProperty("drools.dateformat", "yyyy-MM-dd HH:mm:ss");
 
         PackageScanner scan = new PackageScanner("org.tze.ruleservice.action.impl");
         try {
             List<String> actionClazz  = scan.getFullyQualifiedClassNameList();
+            ruleActions = new HashMap<>();
             for (String clazz : actionClazz) {
                 String beanName = SpringContextUtil.getBeanNameOfClazzAsConvention(clazz);
                 ruleActions.put(beanName, SpringContextUtil.getBean(beanName));
@@ -39,7 +42,9 @@ public class RuleEngine {
     }
 
     public List<Map<String, Object>> executeRuleEngine(Long projectId, Map<String, Object> fact) {
-        KieSession ksession = DroolsUtil.getInstance().getDrlSessionInCache(projectId);
+        if (ruleActions == null) initialize();
+
+        KieSession ksession = DroolsUtil.getInstance().getDrlSession(projectId);
         if (ksession != null) {
             return handleDrlSession(projectId, ksession, fact);
         } else {
@@ -62,7 +67,7 @@ public class RuleEngine {
             drlBuffer.append(rule.getDrl());
         }
         // 初始化drools
-        KieSession session = DroolsUtil.getInstance().getDrlSession(projectId, drlBuffer.toString());
+        KieSession session = DroolsUtil.getInstance().newDrlSession(projectId, drlBuffer.toString());
         return handleDrlSession(projectId, session, fact);
     }
 
