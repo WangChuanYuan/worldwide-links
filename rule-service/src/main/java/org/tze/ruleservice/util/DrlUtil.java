@@ -131,16 +131,20 @@ public class DrlUtil {
         if (actions != null && !actions.isEmpty()) {
             for (int i = 0; i < actions.size(); i++) {
                 ActionVO action = actions.get(i);
-                drlBuffer.append("Map params = new HashMap();").append(System.lineSeparator());
+                String paramVariable = "params_" + i;
+                drlBuffer.append("Map ").append(paramVariable).append(" = new HashMap();").append(System.lineSeparator());
                 // put ruleId
-                drlBuffer.append("params.put(\"").append("ruleId").append("\", ");
+                drlBuffer.append(paramVariable).append(".put(\"").append("ruleId").append("\", ");
                 drlBuffer.append(rule.getId()).append(");").append(System.lineSeparator());
                 // put ruleName
-                drlBuffer.append("params.put(\"").append("ruleName").append("\", \"");
+                drlBuffer.append(paramVariable).append(".put(\"").append("ruleName").append("\", \"");
                 drlBuffer.append(rule.getName()).append("\");").append(System.lineSeparator());
+                // put projectId
+                drlBuffer.append(paramVariable).append(".put(\"").append("projectId").append("\", ");
+                drlBuffer.append(rule.getProjectId()).append(");").append(System.lineSeparator());
                 // put other params
                 for (Map.Entry<String, Object> param : action.getParams().entrySet()) {
-                    drlBuffer.append("params.put(\"").append(param.getKey()).append("\", ");
+                    drlBuffer.append(paramVariable).append(".put(\"").append(param.getKey()).append("\", ");
                     if (param.getValue() instanceof String) {
                         // String
                         drlBuffer.append("\"");
@@ -153,7 +157,10 @@ public class DrlUtil {
                     drlBuffer.append(");").append(System.lineSeparator());
                 }
                 drlBuffer.append("$action_").append(action.getName()).append(".execute(");
-                drlBuffer.append("$fact, params, $results);").append(System.lineSeparator());
+                drlBuffer.append("$fact, ").append(paramVariable).append(", $results);").append(System.lineSeparator());
+                // log the action
+                drlBuffer.append("$action_logAction.execute(");
+                drlBuffer.append("$fact, ").append(paramVariable).append(", $results);").append(System.lineSeparator());
             }
         }
         drlBuffer.append("end").append(System.lineSeparator());
