@@ -16,36 +16,22 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-public class RulePO {
+public class LogPO {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String name;
-    private String description;
+    @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    @JSONField(format="yyyy-MM-dd HH:mm:ss")
+    private LocalDateTime time;
 
     private Long projectId;
     private Long productId;
     private Long deviceId;
+    private Long ruleId;
 
     @Lob
-    private String triggersJson;
-    @Lob
-    private String actionsJson;
-
-    @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
-    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
-    @JSONField(format="yyyy-MM-dd HH:mm:ss")
-    private LocalDateTime begin;
-
-    @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
-    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
-    @JSONField(format="yyyy-MM-dd HH:mm:ss")
-    private LocalDateTime end;
-
-    @Lob
-    private String drl;
-
-    private boolean enabled;
+    private String content;
 }

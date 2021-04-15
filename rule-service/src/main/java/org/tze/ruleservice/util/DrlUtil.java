@@ -7,7 +7,6 @@ import org.tze.ruleservice.vo.TriggerVO;
 
 import java.io.IOException;
 import java.time.format.DateTimeFormatter;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -59,7 +58,7 @@ public class DrlUtil {
     }
 
     private static StringBuffer insertExpiryDate(StringBuffer drlBuffer, RuleVO rule) {
-        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         if (rule.getBegin() != null) {
             String begin = dtf.format(rule.getBegin());
             drlBuffer.append("date-effective \"").append(begin).append("\"").append(System.lineSeparator());
@@ -77,13 +76,21 @@ public class DrlUtil {
         if (rule.getTriggers() == null || rule.getTriggers().isEmpty()) {
             drlBuffer.append("eval(true)").append(System.lineSeparator());
         } else {
+            boolean productAsked = rule.getProductId() != null && rule.getProductId() >= 0;
+            boolean deviceAsked = rule.getDeviceId() != null && rule.getDeviceId() >= 0;
+
             drlBuffer.append("$fact:Map( ");
             for (int i = 0; i < rule.getTriggers().size(); i++) {
                 TriggerVO trigger = rule.getTriggers().get(i);
                 // begin trigger
+                boolean productInjected = false;
+                boolean deviceInjected = false;
                 drlBuffer.append("( ");
                 for (int j = 0; j < trigger.getConditions().size(); j ++) {
                     ConditionVO condition = trigger.getConditions().get(j);
+                    if (condition.getProperty().equals("productId")) productInjected = true;
+                    if (condition.getProperty().equals("deviceId")) deviceInjected = true;
+
                     drlBuffer.append("this[\"").append(condition.getProperty()).append("\"]")
                             .append(condition.getOperator());
                     if (condition.getValue() instanceof String) {
@@ -97,7 +104,18 @@ public class DrlUtil {
                         drlBuffer.append(" && ");
                     }
                 }
+                if (productAsked && !productInjected) {
+                    if (rule.getTriggers().size() > 0) drlBuffer.append(" && ");
+                    drlBuffer.append("this[\"").append("productId").append("\"]")
+                            .append("==").append(rule.getProductId());
+                }
+                if (deviceAsked && !deviceInjected) {
+                    if (rule.getTriggers().size() > 0 || productAsked) drlBuffer.append(" && ");
+                    drlBuffer.append("this[\"").append("deviceId").append("\"]")
+                            .append("==").append(rule.getDeviceId());
+                }
                 drlBuffer.append(" )");
+                // end trigger
                 if (i != rule.getTriggers().size() - 1) {
                     drlBuffer.append(" || ");
                 }
@@ -113,16 +131,20 @@ public class DrlUtil {
         if (actions != null && !actions.isEmpty()) {
             for (int i = 0; i < actions.size(); i++) {
                 ActionVO action = actions.get(i);
-                drlBuffer.append("Map params = new HashMap();").append(System.lineSeparator());
+                String paramVariable = "params_" + i;
+                drlBuffer.append("Map ").append(paramVariable).append(" = new HashMap();").append(System.lineSeparator());
                 // put ruleId
-                drlBuffer.append("params.put(\"").append("ruleId").append("\", ");
+                drlBuffer.append(paramVariable).append(".put(\"").append("ruleId").append("\", ");
                 drlBuffer.append(rule.getId()).append(");").append(System.lineSeparator());
                 // put ruleName
-                drlBuffer.append("params.put(\"").append("ruleName").append("\", \"");
+                drlBuffer.append(paramVariable).append(".put(\"").append("ruleName").append("\", \"");
                 drlBuffer.append(rule.getName()).append("\");").append(System.lineSeparator());
+                // put projectId
+                drlBuffer.append(paramVariable).append(".put(\"").append("projectId").append("\", ");
+                drlBuffer.append(rule.getProjectId()).append(");").append(System.lineSeparator());
                 // put other params
                 for (Map.Entry<String, Object> param : action.getParams().entrySet()) {
-                    drlBuffer.append("params.put(\"").append(param.getKey()).append("\", ");
+                    drlBuffer.append(paramVariable).append(".put(\"").append(param.getKey()).append("\", ");
                     if (param.getValue() instanceof String) {
                         // String
                         drlBuffer.append("\"");
@@ -134,8 +156,11 @@ public class DrlUtil {
                     }
                     drlBuffer.append(");").append(System.lineSeparator());
                 }
-                drlBuffer.append("$action_").append(action.getName()).append("execute(");
-                drlBuffer.append("$fact, params, $results);").append(System.lineSeparator());
+                drlBuffer.append("$action_").append(action.getName()).append(".execute(");
+                drlBuffer.append("$fact, ").append(paramVariable).append(", $results);").append(System.lineSeparator());
+                // log the action
+                drlBuffer.append("$action_logAction.execute(");
+                drlBuffer.append("$fact, ").append(paramVariable).append(", $results);").append(System.lineSeparator());
             }
         }
         drlBuffer.append("end").append(System.lineSeparator());
