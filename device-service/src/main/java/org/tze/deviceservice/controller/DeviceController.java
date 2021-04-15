@@ -23,6 +23,18 @@ public class DeviceController {
         return device;
     }
 
+    @RequestMapping(value = "/device/update",method = RequestMethod.POST)
+    public Device updateDevice(@RequestBody Device device){
+        System.out.println("接口调用"+device.toString());
+        boolean result=deviceService.updateDevice(device);
+        return device;
+    }
+
+    @RequestMapping(value = "/device/login",method = RequestMethod.GET)
+    public Device deviceLogin(@RequestParam("deviceId")Long deviceId,@RequestParam("devicePw")String devicePw){
+        return deviceService.deviceLogin(deviceId,devicePw);
+    }
+
     @RequestMapping(value = "/device/delete",method = RequestMethod.DELETE)
     public boolean deleteDevice(@RequestParam("deviceId")Long deviceId){
         return deviceService.deleteDevice(deviceId);

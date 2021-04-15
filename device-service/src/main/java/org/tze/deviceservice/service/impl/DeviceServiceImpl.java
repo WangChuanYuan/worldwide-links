@@ -69,6 +69,15 @@ public class DeviceServiceImpl implements DeviceService {
     }
 
     @Override
+    public Device deviceLogin(Long deviceId, String password) {
+        try {
+            return deviceDAO.getDeviceByDeviceIdAndPassword(deviceId,password);
+        }catch (Exception e) {
+            throw new RuntimeException("获取失败:" + e.toString());
+        }
+    }
+
+    @Override
     public boolean deleteDevice(Long id) {
         try {
             deviceDAO.delete(deviceDAO.getOne(id));

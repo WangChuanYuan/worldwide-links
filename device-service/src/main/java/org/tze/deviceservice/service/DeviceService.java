@@ -12,6 +12,7 @@ public interface DeviceService {
     List<Device> getDeviceListByUsername(String username);
     Device getSingleDevice(String deviceName);
     Device getSingleDevice(Long deviceId);
+    Device deviceLogin(Long deviceId,String password);
     boolean deleteDevice (Long id);
     boolean updateDevice (Device device);
 }
