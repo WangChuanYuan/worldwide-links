@@ -9,7 +9,7 @@ import java.util.List;
 public interface DeviceDAO extends JpaRepository<Device,Long> {
     List<Device> getDeviceByProductId (Long productId);
     List<Device> getDeviceByProjectId (Long projectId);
-    List<Device> getDeviceByUserName (String username);
+    List<Device> getDeviceByUsername(String username);
     Device getDeviceByDeviceName (String deviceName);
     Device getDeviceByDeviceIdAndPassword (Long deviceId,String password);
 }

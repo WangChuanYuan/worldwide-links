@@ -46,7 +46,7 @@ public class DeviceServiceImpl implements DeviceService {
     @Override
     public List<Device> getDeviceListByUsername(String username) {
         try {
-            List<Device> result=deviceDAO.getDeviceByUserName(username);
+            List<Device> result=deviceDAO.getDeviceByUsername(username);
             return result;
         }catch (Exception e) {
             throw new RuntimeException("获取失败:" + e.toString());
