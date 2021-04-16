@@ -1,15 +1,18 @@
 package org.tze.deviceservice.service.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import org.tze.deviceservice.dao.DeviceDAO;
 import org.tze.deviceservice.entity.Device;
 import org.tze.deviceservice.service.DeviceService;
 
 import java.util.List;
 
+@Service
 public class DeviceServiceImpl implements DeviceService {
+
     @Autowired
-    DeviceDAO deviceDAO;
+    private DeviceDAO deviceDAO;
 
     @Override
     public Device createDevice(Device device) {

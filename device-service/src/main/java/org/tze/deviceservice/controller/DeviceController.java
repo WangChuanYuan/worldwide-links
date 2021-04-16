@@ -3,7 +3,6 @@ package org.tze.deviceservice.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.tze.deviceservice.entity.Device;
-import org.tze.deviceservice.entity.Product;
 import org.tze.deviceservice.service.DeviceService;
 
 import java.util.HashMap;
