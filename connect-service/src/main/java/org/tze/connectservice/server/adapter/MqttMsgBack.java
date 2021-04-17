@@ -6,11 +6,12 @@ import io.netty.channel.Channel;
 import io.netty.handler.codec.mqtt.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.tze.connectservice.feign.feignEntity.Device;
+import org.tze.connectservice.feign.feignService.DeviceService;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import javax.annotation.PostConstruct;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
@@ -25,6 +26,18 @@ public class MqttMsgBack {
     private static Logger log =  LoggerFactory.getLogger(MqttMsgBack.class);
 
     static ConcurrentHashMap<String,Set<Channel>> chm=new ConcurrentHashMap<>();
+    public static ConcurrentHashMap<Channel,Long> connectChannel=new ConcurrentHashMap<>();
+
+    @Autowired
+    DeviceService deviceService;
+    private static MqttMsgBack mqttMsgBack;
+
+    @PostConstruct
+    public void init(){
+        mqttMsgBack=this;
+        mqttMsgBack.deviceService=this.deviceService;
+    }
+
 
     /**
      * 	确认连接请求
@@ -41,8 +54,14 @@ public class MqttMsgBack {
         String userName=mqttConnectMessage.payload().userName();
         String password=mqttConnectMessage.payload().password();
         System.out.println("username: "+userName);
-        System.out.println("password: "+password);
 
+        Device device=mqttMsgBack.deviceService.deviceLogin(Long.parseLong(userName),password);
+        if(device==null){
+            System.out.println("Device Login Failed!");
+            return;
+        }
+
+        connectChannel.put(channel,device.getDeviceId());
         //	构建返回报文， 可变报头
         MqttConnAckVariableHeader mqttConnAckVariableHeaderBack = new MqttConnAckVariableHeader(MqttConnectReturnCode.CONNECTION_ACCEPTED, mqttConnectVariableHeaderInfo.isCleanSession());
         //	构建返回报文， 固定报头
@@ -203,6 +222,24 @@ public class MqttMsgBack {
         log.info("back--"+mqttMessageBack.toString());
         channel.writeAndFlush(mqttMessageBack);
     }
+
+
+    /**
+     * 客户端断开连接
+     * @param channel
+     * @param mqttMessage
+     */
+    public static void disconnect(Channel channel,MqttMessage mqttMessage){
+        connectChannel.remove(channel);
+    }
+
+    /**
+     *
+     * @param channel
+     * @param topic
+     * @param msgID
+     * @param data
+     */
 
     public static void sendMsg2Client(Channel channel,String topic,int msgID,String data){
         if(channel!=null){

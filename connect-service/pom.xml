@@ -43,6 +43,18 @@
             <artifactId>spring-boot-starter-integration</artifactId>
         </dependency>
 
+        <!-- feign依赖-->
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-openfeign</artifactId>
+        </dependency>
+
+        <!--整合hystrix-->
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-netflix-hystrix</artifactId>
+        </dependency>
+
 
         <!-- netty依赖 springboot2.x自动导入版本 -->
         <dependency>

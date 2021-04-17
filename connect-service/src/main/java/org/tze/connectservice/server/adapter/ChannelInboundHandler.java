@@ -87,6 +87,7 @@ public class ChannelInboundHandler extends ChannelInboundHandlerAdapter {
                 case DISCONNECT:	//	客户端主动断开连接
                     //	DISCONNECT报文是客户端发给服务端的最后一个控制报文， 服务端必须验证所有的保留位都被设置为0
                     //	to do
+                    MqttMsgBack.disconnect(channel,mqttMessage);
                     break;
                 default:
                     break;
