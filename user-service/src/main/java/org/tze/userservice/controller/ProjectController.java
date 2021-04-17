@@ -41,6 +41,7 @@ public class ProjectController {
 
     @RequestMapping(value = "/project/getUserProject",method = RequestMethod.GET)
     public List<Project> getUserProject(@RequestParam("userId") String userID){
+        System.out.println("getproject"+userID);
         return projectService.getUserProject(userID);
     }
 

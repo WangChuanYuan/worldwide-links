@@ -22,7 +22,7 @@ public class ProjectServiceImpl implements ProjectService {
     @Override
     public Project createProject(String name, String userId) {
         Project project=new Project();
-        project.setName(userId);
+        project.setName(name);
         project.setUserId(userId);
         return projectDAO.saveAndFlush(project);
     }
