@@ -14,9 +14,9 @@ public class ProductController {
     ProductService productService;
 
     @RequestMapping(value = "/product/create",method = RequestMethod.POST)
-    public Long createProduct(@RequestBody Product product){
-        System.out.println("接口调用"+product.toString());
-        Product product1=productService.createProduct(product.getProductName());
+    public Long createProduct(@RequestParam("productName")String productName){
+        System.out.println("接口调用"+productName);
+        Product product1=productService.createProduct(productName);
         return product1.getProductId();
     }
     @RequestMapping(value = "/product/delete",method = RequestMethod.DELETE)

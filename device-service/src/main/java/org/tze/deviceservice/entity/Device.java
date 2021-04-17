@@ -72,9 +72,14 @@ public class Device {
     private Date lastActive;
 
     /**
-     * 1:在线;2:离线;3未激活
+     * 1:上线;2:线线;3未激活
      */
     private Integer state;
+
+    /**
+     * 1:启用;2:禁用
+     */
+    private Integer isEnable;
 
     /**
      * MQTT用户名

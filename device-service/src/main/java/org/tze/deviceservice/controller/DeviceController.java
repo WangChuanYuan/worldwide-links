@@ -39,6 +39,33 @@ public class DeviceController {
         return deviceService.deleteDevice(deviceId);
     }
 
+
+    @RequestMapping(value = "/device/onlineDevice",method = RequestMethod.DELETE)
+    public boolean onlineDevice(@RequestParam("deviceId")Long deviceId){
+
+        return deviceService.deleteDevice(deviceId);
+    }
+
+    @RequestMapping(value = "/device/offlineDevice",method = RequestMethod.DELETE)
+    public boolean offlineDevice(@RequestParam("deviceId")Long deviceId){
+
+        return deviceService.deleteDevice(deviceId);
+    }
+
+    @RequestMapping(value = "/device/startDevice",method = RequestMethod.DELETE)
+    public boolean startDevice(@RequestParam("deviceId")Long deviceId){
+
+        return deviceService.deleteDevice(deviceId);
+    }
+
+    @RequestMapping(value = "/device/endDevice",method = RequestMethod.DELETE)
+    public boolean endDevice(@RequestParam("deviceId")Long deviceId){
+
+        return deviceService.deleteDevice(deviceId);
+    }
+
+
+
     @RequestMapping(value = "/device/getDeviceByProject",method = RequestMethod.GET)
     public List<Device> getByProject(@RequestParam("projectId") Long projectId){
         return deviceService.getDeviceListByProject(projectId);
