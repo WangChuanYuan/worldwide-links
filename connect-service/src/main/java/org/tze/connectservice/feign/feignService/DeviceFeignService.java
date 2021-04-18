@@ -12,7 +12,7 @@ import org.tze.connectservice.feign.feignEntity.Device;
  */
 
 @Service
-public class DeviceService {
+public class DeviceFeignService {
     @Autowired
     DeviceFeignClient deviceFeignClient;
 

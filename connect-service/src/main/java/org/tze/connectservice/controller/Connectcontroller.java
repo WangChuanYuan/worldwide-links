@@ -4,6 +4,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.tze.connectservice.feign.feignEntity.Device;
 import org.tze.connectservice.server.adapter.MqttMsgBack;
 
 import java.util.ArrayList;
@@ -18,11 +19,16 @@ import java.util.List;
 public class Connectcontroller {
 
     @RequestMapping(value = "/connect/getOnlineDevice",method = RequestMethod.GET)
-    public List<Long> getOnlineDevice(){
-        List<Long> list=new ArrayList<>();
-        for(Long id:MqttMsgBack.connectChannel.values()){
-            list.add(id);
+    public List<Device> getOnlineDevice(){
+        List<Device> list=new ArrayList<>();
+        for(Device device:MqttMsgBack.connectChannel.values()){
+            list.add(device);
         }
         return list;
+    }
+
+    @RequestMapping(value = "/connect/sendMsg",method = RequestMethod.POST)
+    public void sendMsg(@RequestParam("topicName") String topicName,@RequestParam("msg")String msg){
+        MqttMsgBack.serverSendMsg2Clinet(topicName,msg,-1);
     }
 }
