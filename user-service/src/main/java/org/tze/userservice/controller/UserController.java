@@ -19,6 +19,8 @@ public class UserController {
 
     @RequestMapping(value = "/user/login",method = RequestMethod.POST)
     public boolean userLogin(@RequestParam("userId")String userID,@RequestParam("password")String password){
+        System.out.println(userID);
+        System.out.println(password);
         return userService.userLogin(userID,password);
     }
 

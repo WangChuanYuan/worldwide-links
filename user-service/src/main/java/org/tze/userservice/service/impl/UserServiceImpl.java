@@ -14,16 +14,20 @@ import org.tze.userservice.service.UserService;
 public class UserServiceImpl implements UserService {
     @Autowired
     UserDAO userDAO;
+
     @Override
     public boolean userLogin(String userId, String password) {
-        return password.equals(userDAO.findById(userId).get().getPassword());
+        if (userDAO.existsById(userId))
+            return password.equals(userDAO.findById(userId).get().getPassword());
+        else
+            return false;
     }
 
     @Override
     public User registerUser(String userId, String password) {
-        if(userDAO.existsById(userId))
+        if (userDAO.existsById(userId))
             return null;
-        User user=new User();
+        User user = new User();
         user.setUserId(userId);
         user.setPassword(password);
         return userDAO.saveAndFlush(user);
@@ -31,7 +35,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User getSingleUser(String userId) {
-        if(userDAO.existsById(userId))
+        if (userDAO.existsById(userId))
             return userDAO.findById(userId).get();
         return null;
     }
