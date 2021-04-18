@@ -10,6 +10,7 @@ public interface DeviceDAO extends JpaRepository<Device,Long> {
     List<Device> getDeviceByProductId (Long productId);
     List<Device> getDeviceByProjectId (Long projectId);
     List<Device> getDeviceByUsername(String username);
+    List<Device> getDeviceByState(int state);
     Device getDeviceByDeviceName (String deviceName);
     Device getDeviceByDeviceIdAndPassword (Long deviceId,String password);
 }

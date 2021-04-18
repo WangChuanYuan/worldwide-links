@@ -16,10 +16,8 @@ public class ProductServiceImpl implements ProductService {
 
 
     @Override
-    public Product createProduct(String productName) {
+    public Product createProduct(Product product) {
         try {
-        Product product=new Product();
-        product.setProductName(productName);
         return productDAO.save(product);
         } catch (Exception e) {
             throw new RuntimeException("注册失败:" + e.toString());
