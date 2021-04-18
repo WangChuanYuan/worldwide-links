@@ -15,9 +15,10 @@ public class DeviceController {
     @Autowired
     DeviceService deviceService;
 
-    @RequestMapping(value = "/device/create",method = RequestMethod.POST)
-    public Device createDevice(@RequestBody Device device){
+    @RequestMapping(value = "/device/create/{projectId}",method = RequestMethod.POST)
+    public Device createDevice(@RequestBody Device device,@PathVariable Long projectId){
         System.out.println("接口调用"+device.toString());
+        device.setProductId(projectId);
         device.setProjectId(Long.valueOf(1));
         device.setProductId(Long.valueOf(1));
         Device result=deviceService.createDevice(device);
@@ -80,8 +81,8 @@ public class DeviceController {
         return deviceService.getDeviceListByProject(projectId);
     }
 
-    @RequestMapping(value = "/device/getAllDevice",method = RequestMethod.GET)
-    public List<Device> getAll(@RequestParam Long projectId){
+    @RequestMapping(value = "/device/getAll",method = RequestMethod.GET)
+    public List<Device> getAll(){
         return deviceService.getDeviceAll();
     }
 

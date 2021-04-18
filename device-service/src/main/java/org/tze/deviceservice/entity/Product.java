@@ -22,9 +22,11 @@ public class Product {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long productId;
 
+    private Long projectId;
     private String productName;
     private String description;
     private boolean enabled;
+    private String model;
 
 
 
