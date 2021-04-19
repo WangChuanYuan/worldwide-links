@@ -26,7 +26,8 @@ public class Product {
     private String productName;
     private String description;
     private boolean enabled;
-    private String model;
+    private String modelServe;
+    private String modelPro;
 
 
 
