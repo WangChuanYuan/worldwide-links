@@ -72,7 +72,7 @@ public class Device {
     private Date lastActive;
 
     /**
-     * 1:上线;2:线线;3未激活
+     * 1:上线;2:下线;3未激活
      */
     private Integer state;
 

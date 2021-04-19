@@ -54,6 +54,26 @@ public class DeviceServiceImpl implements DeviceService {
     }
 
     @Override
+    public List<Device> getDeviceListByState(int state) {
+        try {
+            List<Device> result=deviceDAO.getDeviceByState(state);
+            return result;
+        }catch (Exception e) {
+            throw new RuntimeException("获取失败:" + e.toString());
+        }
+    }
+
+    @Override
+    public List<Device> getDeviceAll() {
+        try {
+            List<Device> result=deviceDAO.findAll();
+            return result;
+        }catch (Exception e) {
+            throw new RuntimeException("获取失败:" + e.toString());
+        }
+    }
+
+    @Override
     public Device getSingleDevice(String deviceName) {
         try {
             return deviceDAO.getDeviceByDeviceName(deviceName);

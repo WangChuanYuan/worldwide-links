@@ -18,11 +18,13 @@ public class DeviceController {
     @RequestMapping(value = "/device/create",method = RequestMethod.POST)
     public Device createDevice(@RequestBody Device device){
         System.out.println("接口调用"+device.toString());
+        device.setProjectId(Long.valueOf(1));
+        device.setProductId(Long.valueOf(1));
         Device result=deviceService.createDevice(device);
         return device;
     }
 
-    @RequestMapping(value = "/device/update",method = RequestMethod.POST)
+    @RequestMapping(value = "/device/create",method = RequestMethod.PUT)
     public Device updateDevice(@RequestBody Device device){
         System.out.println("接口调用"+device.toString());
         boolean result=deviceService.updateDevice(device);
@@ -40,35 +42,47 @@ public class DeviceController {
     }
 
 
-    @RequestMapping(value = "/device/onlineDevice",method = RequestMethod.DELETE)
+    @RequestMapping(value = "/device/onlineDevice/{deviceId}",method = RequestMethod.PUT)
     public boolean onlineDevice(@RequestParam("deviceId")Long deviceId){
-
-        return deviceService.deleteDevice(deviceId);
+        Device device=deviceService.getSingleDevice(deviceId);
+        device.setState(1);
+        return deviceService.updateDevice(device);
     }
 
-    @RequestMapping(value = "/device/offlineDevice",method = RequestMethod.DELETE)
+    @RequestMapping(value = "/device/offlineDevice",method = RequestMethod.PUT)
     public boolean offlineDevice(@RequestParam("deviceId")Long deviceId){
-
-        return deviceService.deleteDevice(deviceId);
+        Device device=deviceService.getSingleDevice(deviceId);
+        device.setState(2);
+        return deviceService.updateDevice(device);
     }
 
-    @RequestMapping(value = "/device/startDevice",method = RequestMethod.DELETE)
+    @RequestMapping(value = "/device/startDevice",method = RequestMethod.PUT)
     public boolean startDevice(@RequestParam("deviceId")Long deviceId){
-
-        return deviceService.deleteDevice(deviceId);
+        Device device=deviceService.getSingleDevice(deviceId);
+        device.setIsEnable(1);
+        return deviceService.updateDevice(device);
     }
 
-    @RequestMapping(value = "/device/endDevice",method = RequestMethod.DELETE)
+    @RequestMapping(value = "/device/endDevice",method = RequestMethod.PUT)
     public boolean endDevice(@RequestParam("deviceId")Long deviceId){
-
-        return deviceService.deleteDevice(deviceId);
+        Device device=deviceService.getSingleDevice(deviceId);
+        device.setIsEnable(2);
+        return deviceService.updateDevice(device);
     }
 
-
+    @RequestMapping(value = "/device/getOnlineDevice",method = RequestMethod.GET)
+    public List<Device> getOnlineDevice(){
+        return deviceService.getDeviceListByState(1);
+    }
 
     @RequestMapping(value = "/device/getDeviceByProject",method = RequestMethod.GET)
     public List<Device> getByProject(@RequestParam("projectId") Long projectId){
         return deviceService.getDeviceListByProject(projectId);
+    }
+
+    @RequestMapping(value = "/device/getAllDevice",method = RequestMethod.GET)
+    public List<Device> getAll(@RequestParam Long projectId){
+        return deviceService.getDeviceAll();
     }
 
     @RequestMapping(value = "/device/getDeviceByProduct",method = RequestMethod.GET)
