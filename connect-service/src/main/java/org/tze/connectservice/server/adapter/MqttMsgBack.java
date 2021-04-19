@@ -1,16 +1,17 @@
 package org.tze.connectservice.server.adapter;
 
-import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.Channel;
 import io.netty.handler.codec.mqtt.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.tze.connectservice.feign.feignEntity.Device;
+import org.tze.connectservice.feign.feignService.DeviceFeignService;
+import org.tze.connectservice.feign.feignService.RuleFeignService;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import javax.annotation.PostConstruct;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
@@ -25,6 +26,21 @@ public class MqttMsgBack {
     private static Logger log =  LoggerFactory.getLogger(MqttMsgBack.class);
 
     static ConcurrentHashMap<String,Set<Channel>> chm=new ConcurrentHashMap<>();
+    public static ConcurrentHashMap<Channel,Device> connectChannel=new ConcurrentHashMap<>();
+
+    @Autowired
+    DeviceFeignService deviceFeignService;
+
+    @Autowired
+    RuleFeignService ruleFeignService;
+    private static MqttMsgBack mqttMsgBack;
+
+    @PostConstruct
+    public void init(){
+        mqttMsgBack=this;
+        mqttMsgBack.deviceFeignService =this.deviceFeignService;
+    }
+
 
     /**
      * 	确认连接请求
@@ -41,8 +57,14 @@ public class MqttMsgBack {
         String userName=mqttConnectMessage.payload().userName();
         String password=mqttConnectMessage.payload().password();
         System.out.println("username: "+userName);
-        System.out.println("password: "+password);
 
+        Device device=mqttMsgBack.deviceFeignService.deviceLogin(Long.parseLong(userName),password);
+        if(device==null){
+            System.out.println("Device Login Failed!");
+            return;
+        }
+
+        connectChannel.put(channel,device);
         //	构建返回报文， 可变报头
         MqttConnAckVariableHeader mqttConnAckVariableHeaderBack = new MqttConnAckVariableHeader(MqttConnectReturnCode.CONNECTION_ACCEPTED, mqttConnectVariableHeaderInfo.isCleanSession());
         //	构建返回报文， 固定报头
@@ -70,13 +92,31 @@ public class MqttMsgBack {
         System.out.println("TopicName:"+topicName);
         String data = new String(headBytes);
         System.out.println("publish data--"+data);
-        if(chm.containsKey(topicName)){
-            System.out.println("sendTopicName: "+topicName);
-            for (Channel channel1:chm.get(topicName)) {
-                System.out.println(channel1.id());
-                sendMsg2Client(channel1, topicName, msgID, data);
+
+        //发消息给iot平台
+        String[] msg=data.split(",");
+        boolean isFormat=true;
+        Map<String,Object> m=new HashMap<>();
+        m.put("productId",connectChannel.get(channel).getProductId());
+        m.put("deviceId",connectChannel.get(channel).getDeviceId());
+        for (String s:msg){
+            String[] detail=s.split("=");
+            if(detail.length!=2) {
+                isFormat=false;
+                break;
+            }
+            try {
+                m.put(detail[0],Double.parseDouble(detail[1]));
+            }catch (Exception e){
+                isFormat=false;
+                break;
             }
         }
+        if(isFormat){
+            mqttMsgBack.ruleFeignService.execute(connectChannel.get(channel).getProjectId(),m);
+        }
+
+        serverSendMsg2Clinet(topicName,data,msgID);
 
         switch (qos) {
             case AT_MOST_ONCE: 		//	至多一次
@@ -204,6 +244,24 @@ public class MqttMsgBack {
         channel.writeAndFlush(mqttMessageBack);
     }
 
+
+    /**
+     * 客户端断开连接
+     * @param channel
+     * @param mqttMessage
+     */
+    public static void disconnect(Channel channel,MqttMessage mqttMessage){
+        connectChannel.remove(channel);
+    }
+
+    /**
+     *
+     * @param channel
+     * @param topic
+     * @param msgID
+     * @param data
+     */
+
     public static void sendMsg2Client(Channel channel,String topic,int msgID,String data){
         if(channel!=null){
             MqttFixedHeader Header = new MqttFixedHeader(
@@ -229,6 +287,16 @@ public class MqttMsgBack {
 
             System.out.println("对" + channel.id() + "发送了 id:"+msgID+"消息："
                     + data);
+        }
+    }
+
+    public static void serverSendMsg2Clinet(String topic,String msg,int msgID){
+        if(chm.containsKey(topic)){
+            System.out.println("sendTopicName: "+topic);
+            for (Channel channel1:chm.get(topic)) {
+                System.out.println(channel1.id());
+                sendMsg2Client(channel1, topic, msgID, msg);
+            }
         }
     }
 }
