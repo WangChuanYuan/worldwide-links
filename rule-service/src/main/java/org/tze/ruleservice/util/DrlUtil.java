@@ -90,7 +90,10 @@ public class DrlUtil {
                     ConditionVO condition = trigger.getConditions().get(j);
                     if (condition.getProperty().equals("productId")) productInjected = true;
                     if (condition.getProperty().equals("deviceId")) deviceInjected = true;
-
+					
+					// begin condition
+					drlBuffer.append("(");
+					drlBuffer.append("not this[\"").append(condition.getProperty()).append("\"] && ");
                     drlBuffer.append("this[\"").append(condition.getProperty()).append("\"]")
                             .append(condition.getOperator());
                     if (condition.getValue() instanceof String) {
@@ -100,19 +103,27 @@ public class DrlUtil {
                         // Number
                         drlBuffer.append(condition.getValue());
                     }
+					drlBuffer.append(")");
+					// end condition
                     if (j != trigger.getConditions().size() - 1) {
                         drlBuffer.append(" && ");
                     }
                 }
                 if (productAsked && !productInjected) {
                     if (rule.getTriggers().size() > 0) drlBuffer.append(" && ");
+					drlBuffer.append("(");
+					drlBuffer.append("not this[\"").append("productId").append("\"] && ");
                     drlBuffer.append("this[\"").append("productId").append("\"]")
                             .append("==").append(rule.getProductId());
+					drlBuffer.append(")");
                 }
                 if (deviceAsked && !deviceInjected) {
                     if (rule.getTriggers().size() > 0 || productAsked) drlBuffer.append(" && ");
+					drlBuffer.append("(");
+					drlBuffer.append("not this[\"").append("deviceId").append("\"] && ");
                     drlBuffer.append("this[\"").append("deviceId").append("\"]")
                             .append("==").append(rule.getDeviceId());
+					drlBuffer.append(")");
                 }
                 drlBuffer.append(" )");
                 // end trigger

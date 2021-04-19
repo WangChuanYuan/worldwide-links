@@ -5,15 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="851ee0f8-b7fc-48b3-b9c8-8740449261be" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/device-service/src/main/java/org/tze/deviceservice/controller/DeviceController.java" beforeDir="false" afterPath="$PROJECT_DIR$/device-service/src/main/java/org/tze/deviceservice/controller/DeviceController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/device-service/src/main/java/org/tze/deviceservice/controller/ProductController.java" beforeDir="false" afterPath="$PROJECT_DIR$/device-service/src/main/java/org/tze/deviceservice/controller/ProductController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/device-service/src/main/java/org/tze/deviceservice/dao/DeviceDAO.java" beforeDir="false" afterPath="$PROJECT_DIR$/device-service/src/main/java/org/tze/deviceservice/dao/DeviceDAO.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/device-service/src/main/java/org/tze/deviceservice/entity/Device.java" beforeDir="false" afterPath="$PROJECT_DIR$/device-service/src/main/java/org/tze/deviceservice/entity/Device.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/device-service/src/main/java/org/tze/deviceservice/entity/Product.java" beforeDir="false" afterPath="$PROJECT_DIR$/device-service/src/main/java/org/tze/deviceservice/entity/Product.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/device-service/src/main/java/org/tze/deviceservice/service/DeviceService.java" beforeDir="false" afterPath="$PROJECT_DIR$/device-service/src/main/java/org/tze/deviceservice/service/DeviceService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/device-service/src/main/java/org/tze/deviceservice/service/ProductService.java" beforeDir="false" afterPath="$PROJECT_DIR$/device-service/src/main/java/org/tze/deviceservice/service/ProductService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/device-service/src/main/java/org/tze/deviceservice/service/impl/DeviceServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/device-service/src/main/java/org/tze/deviceservice/service/impl/DeviceServiceImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/device-service/src/main/java/org/tze/deviceservice/service/impl/ProductServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/device-service/src/main/java/org/tze/deviceservice/service/impl/ProductServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -48,8 +40,14 @@
     <option name="showLibraryContents" value="true" />
   </component>
   <component name="PropertiesComponent">
+    <property name="RequestMappingsPanelOrder0" value="0" />
+    <property name="RequestMappingsPanelOrder1" value="1" />
+    <property name="RequestMappingsPanelWidth0" value="75" />
+    <property name="RequestMappingsPanelWidth1" value="75" />
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="aspect.path.notification.shown" value="true" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$/gateway-service" />
     <property name="project.structure.last.edited" value="Project" />
     <property name="project.structure.proportion" value="0.15" />
@@ -101,9 +99,40 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
+    <configuration default="true" type="ArquillianJUnit" factoryName="" nameIsGenerated="true">
+      <option name="arquillianRunConfiguration">
+        <value>
+          <option name="containerStateName" value="" />
+        </value>
+      </option>
+      <option name="TEST_OBJECT" value="class" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="RuleServiceApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" temporary="true" nameIsGenerated="true">
+      <module name="rule-service" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="org.tze.ruleservice.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="SPRING_BOOT_MAIN_CLASS" value="org.tze.ruleservice.RuleServiceApplication" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <list>
+      <item itemvalue="Application.DeviceServiceApplication" />
+      <item itemvalue="Application.EurekaServiceApplication" />
+      <item itemvalue="Application.GatewayServiceApplication" />
+      <item itemvalue="Spring Boot.RuleServiceApplication" />
+    </list>
     <recent_temporary>
       <list>
         <item itemvalue="Application.DeviceServiceApplication" />
+        <item itemvalue="Spring Boot.RuleServiceApplication" />
         <item itemvalue="Application.GatewayServiceApplication" />
         <item itemvalue="Application.EurekaServiceApplication" />
       </list>
@@ -117,8 +146,13 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1618195131757</updated>
+      <workItem from="1618721591881" duration="2321000" />
+      <workItem from="1618727650970" duration="110000" />
     </task>
     <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
     <option name="TAB_STATES">
