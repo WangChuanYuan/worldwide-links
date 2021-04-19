@@ -25,6 +25,7 @@ public class Connectcontroller {
             list.add(device);
         }
         return list;
+        
     }
 
     @RequestMapping(value = "/connect/sendMsg",method = RequestMethod.POST)
