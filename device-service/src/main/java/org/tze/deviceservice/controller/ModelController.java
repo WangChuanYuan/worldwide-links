@@ -20,7 +20,7 @@ public class ModelController {
 
     @RequestMapping(value = "/modelPro/create",method = RequestMethod.POST)
     public ModelPro createModelPro(@RequestBody ModelPro modelPro){
-        System.out.println("接口调用"+modelPro.toString());
+        System.out.println("接口调用Pro"+modelPro.toString());
         ModelPro re=modelProService.createModelPro(modelPro);
         return re;
     }
@@ -43,7 +43,7 @@ public class ModelController {
 
     @RequestMapping(value = "/modelServe/create",method = RequestMethod.POST)
     public ModelServe createModelServe(@RequestBody ModelServe modelServe){
-        System.out.println("接口调用"+modelServe.toString());
+        System.out.println("接口调用Ser"+modelServe.toString());
         ModelServe re=modelServeService.createModelServe(modelServe);
         return re;
     }
