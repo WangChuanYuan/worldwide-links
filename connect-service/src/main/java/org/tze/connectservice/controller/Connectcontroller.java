@@ -1,5 +1,6 @@
 package org.tze.connectservice.controller;
 
+import org.eclipse.paho.client.mqttv3.internal.wire.MqttDisconnect;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -31,5 +32,11 @@ public class Connectcontroller {
     @RequestMapping(value = "/connect/sendMsg",method = RequestMethod.POST)
     public void sendMsg(@RequestParam("topicName") String topicName,@RequestParam("msg")String msg){
         MqttMsgBack.serverSendMsg2Clinet(topicName,msg,-1);
+    }
+
+    @RequestMapping(value = "/connect/disconnect",method = RequestMethod.POST)
+    public boolean disconnect(@RequestParam("deviceId") Long deviceId){
+
+        return MqttMsgBack.disconnect(deviceId);
     }
 }
