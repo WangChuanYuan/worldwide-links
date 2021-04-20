@@ -7,6 +7,7 @@ import org.eclipse.paho.client.mqttv3.internal.wire.MqttDisconnect;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.tze.connectservice.feign.feignEntity.Device;
 import org.tze.connectservice.feign.feignService.DeviceFeignService;
 import org.tze.connectservice.feign.feignService.RuleFeignService;
@@ -21,7 +22,7 @@ import java.util.stream.Collectors;
  * @Description: 对MQTT客户端发送消息后，处理的返回消息，基于MQTT协议的，需要MQTT协议的主要内容
  */
 
-
+@Component
 public class MqttMsgBack {
 
     private static Logger log =  LoggerFactory.getLogger(MqttMsgBack.class);
@@ -41,6 +42,7 @@ public class MqttMsgBack {
     public void init(){
         mqttMsgBack=this;
         mqttMsgBack.deviceFeignService =this.deviceFeignService;
+        mqttMsgBack.ruleFeignService=this.ruleFeignService;
     }
 
 
@@ -61,8 +63,17 @@ public class MqttMsgBack {
         System.out.println("username: "+userName);
 
         Device device=mqttMsgBack.deviceFeignService.deviceLogin(Long.parseLong(userName),password);
+        //Device device=null;
         if(device==null){
             System.out.println("Device Login Failed!");
+            //	构建返回报文， 可变报头
+            MqttConnAckVariableHeader mqttConnAckVariableHeaderBack = new MqttConnAckVariableHeader(MqttConnectReturnCode.CONNECTION_REFUSED_BAD_USER_NAME_OR_PASSWORD, mqttConnectVariableHeaderInfo.isCleanSession());
+            //	构建返回报文， 固定报头
+            MqttFixedHeader mqttFixedHeaderBack = new MqttFixedHeader(MqttMessageType.CONNACK,mqttFixedHeaderInfo.isDup(), MqttQoS.AT_MOST_ONCE, mqttFixedHeaderInfo.isRetain(), 0x02);
+            //	构建CONNACK消息体
+            MqttConnAckMessage connAck = new MqttConnAckMessage(mqttFixedHeaderBack, mqttConnAckVariableHeaderBack);
+            log.info("back--"+connAck.toString());
+            channel.writeAndFlush(connAck);
             return;
         }
 
