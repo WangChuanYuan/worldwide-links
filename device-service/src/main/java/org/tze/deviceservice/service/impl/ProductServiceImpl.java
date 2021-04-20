@@ -43,6 +43,15 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
+    public List<Product> getProductByProjectId(Long projectId) {
+        try{
+            return productDAO.getProductByProjectId(projectId);
+        }catch (Exception e){
+            throw new RuntimeException(e.toString());
+        }
+    }
+
+    @Override
     public boolean deleteProduct(Long id) {
         try{
             productDAO.deleteById(id);

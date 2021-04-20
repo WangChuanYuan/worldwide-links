@@ -8,6 +8,7 @@ public interface ProductService {
     Product createProduct(Product product);
     List<Product> getProductList();
     Product getSingleProduct(String productName);
+    List<Product>  getProductByProjectId(Long projectId);
     boolean deleteProduct(Long id);
     boolean modifyProduct(Product product);
 }
