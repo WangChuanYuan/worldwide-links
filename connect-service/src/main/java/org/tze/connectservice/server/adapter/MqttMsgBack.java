@@ -60,14 +60,14 @@ public class MqttMsgBack {
         String password=mqttConnectMessage.payload().password();
         System.out.println("username: "+userName);
 
-/*        Device device=mqttMsgBack.deviceFeignService.deviceLogin(Long.parseLong(userName),password);
+        Device device=mqttMsgBack.deviceFeignService.deviceLogin(Long.parseLong(userName),password);
         if(device==null){
             System.out.println("Device Login Failed!");
             return;
-        }*/
+        }
 
-        Device device=new Device();
-        device.setDeviceId(1L);
+/*        Device device=new Device();
+        device.setDeviceId(1L);*/
 
         connectChannel.put(channel,device);
         deviceIdMap.put(device.getDeviceId(),channel);
