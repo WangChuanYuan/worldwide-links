@@ -97,17 +97,17 @@ public class DeviceController {
     }
 
     @RequestMapping(value = "/device/getDeviceByProduct/{productId}",method = RequestMethod.GET)
-    public List<Device> getByProduct(@PathParam("productId") Long productId){
+    public List<Device> getByProduct(@PathVariable("productId") Long productId){
         return deviceService.getDeviceListByProduct(productId);
     }
 
     @RequestMapping(value = "/device/getDeviceById/{deviceId}",method = RequestMethod.GET)
-    public Device getSingleDeviceById(@PathParam("deviceId")Long deviceId){
+    public Device getSingleDeviceById(@PathVariable("deviceId")Long deviceId){
         return deviceService.getSingleDevice(deviceId);
     }
 
     @RequestMapping(value = "/device/getDeviceByName/{deviceName}",method = RequestMethod.GET)
-    public Device getSingleDeviceByName(@PathParam("deviceName")String deviceName){
+    public Device getSingleDeviceByName(@PathVariable("deviceName")String deviceName){
         return deviceService.getSingleDevice(deviceName);
     }
 
