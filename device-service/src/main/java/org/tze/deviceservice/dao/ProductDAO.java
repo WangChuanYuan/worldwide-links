@@ -10,4 +10,5 @@ import java.util.*;
 public interface ProductDAO extends JpaRepository<Product,Long> {
 
     Product getProductByProductName(String productName);
+    List<Product> getProductByProjectId(Long projectId);
 }

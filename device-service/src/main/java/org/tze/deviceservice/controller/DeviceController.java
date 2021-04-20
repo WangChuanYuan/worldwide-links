@@ -87,8 +87,8 @@ public class DeviceController {
         return deviceService.getDeviceListByState("上线");
     }
 
-    @RequestMapping(value = "/device/getDeviceByProject",method = RequestMethod.GET)
-    public List<Device> getByProject(@RequestParam("projectId") Long projectId){
+    @RequestMapping(value = "/device/getDeviceByProject/{projectId}",method = RequestMethod.GET)
+    public List<Device> getByProject(@PathVariable("projectId") Long projectId){
         return deviceService.getDeviceListByProject(projectId);
     }
 
