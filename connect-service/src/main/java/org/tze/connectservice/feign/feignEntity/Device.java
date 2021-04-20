@@ -17,6 +17,8 @@ import java.util.Date;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Device {
+    private Long projectId;
+    private Long productId;
     private Long deviceId;
     private String deviceName;
     private String logo;
