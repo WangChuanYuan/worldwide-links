@@ -19,7 +19,7 @@ public class ProductVO {
     private String productName;
     private String description;
     private boolean enabled;
-    private List<ModelServe> modelServe;
+    private List<ModelServeVO> modelServe;
     private List<ModelPro> modelPro;
 
 }

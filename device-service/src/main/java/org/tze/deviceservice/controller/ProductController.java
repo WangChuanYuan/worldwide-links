@@ -5,6 +5,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.tze.deviceservice.VO.ModelServeVO;
 import org.tze.deviceservice.VO.ProductVO;
 import org.tze.deviceservice.entity.ModelPro;
 import org.tze.deviceservice.entity.ModelServe;
@@ -73,8 +74,33 @@ public class ProductController {
         modelPros= JSONObject.parseArray(product.getModelPro(),ModelPro.class);
         productVO.setModelPro(modelPros);
         List<ModelServe> modelServes=new ArrayList<>();
-        modelServes= JSONObject.parseArray(product.getModelServe(),ModelServe.class);
-        productVO.setModelServe(modelServes);
+        modelPros= JSONObject.parseArray(product.getModelServe(),ModelPro.class);
+        List<ModelServeVO> modelServeVOS=new ArrayList<>();
+        for(ModelServe modelServe:modelServes){
+          modelServeVOS.add(transferModelServe(modelServe));
+        }
+        productVO.setModelServe(modelServeVOS);
         return productVO;
+    }
+
+    private ModelServeVO transferModelServe(ModelServe modelServe){
+        ModelServeVO modelServeVO=new ModelServeVO();
+        modelServeVO.setDescription(modelServe.getDescription());
+        modelServeVO.setId(modelServe.getId());
+        modelServeVO.setIdentifier(modelServe.getIdentifier());
+        modelServeVO.setName(modelServe.getName());
+        List<ModelPro> modelPros=new ArrayList<>();
+        modelPros= JSONObject.parseArray(modelServe.getParams(),ModelPro.class);
+        modelServeVO.setParams(modelPros);
+        return modelServeVO;
+    }
+
+    private ModelServe trasnferModelServeVO(ModelServeVO modelServeVO){
+        ModelServe modelServe=new ModelServe();
+        modelServe.setDescription(modelServeVO.getDescription());
+        modelServe.setIdentifier(modelServeVO.getIdentifier());
+        modelServe.setName(modelServeVO.getName());
+        modelServe.setParams(JSON.toJSONString(modelServeVO.getParams()));
+        return modelServe;
     }
 }
