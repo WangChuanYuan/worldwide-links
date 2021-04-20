@@ -10,7 +10,7 @@ public interface DeviceService {
     List<Device> getDeviceListByProject(Long projectId);
     List<Device> getDeviceListByProduct(Long productId);
     List<Device> getDeviceListByUsername(String username);
-    List<Device> getDeviceListByState(int state);
+    List<Device> getDeviceListByState(String state);
     List<Device> getDeviceAll();
     Device getSingleDevice(String deviceName);
     Device getSingleDevice(Long deviceId);
