@@ -1,4 +1,4 @@
-package org.tze.connectservice.feign.feignEntity;
+package org.tze.deviceservice.feign.feignEntity;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

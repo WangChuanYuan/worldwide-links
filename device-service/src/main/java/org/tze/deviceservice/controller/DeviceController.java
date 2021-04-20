@@ -3,25 +3,24 @@ package org.tze.deviceservice.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.tze.deviceservice.entity.Device;
+import org.tze.deviceservice.feign.feignService.ConnectFeignService;
 import org.tze.deviceservice.service.DeviceService;
 
 import javax.websocket.server.PathParam;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 
 @RestController
 public class DeviceController {
     @Autowired
     DeviceService deviceService;
+    @Autowired
+    ConnectFeignService connectFeignService;
 
     @RequestMapping(value = "/device/create/{projectId}",method = RequestMethod.POST)
     public Device createDevice(@RequestBody Device device,@PathVariable Long projectId){
         System.out.println("接口调用"+device.toString());
-        device.setProductId(projectId);
-        device.setProjectId(Long.valueOf(1));
-        device.setProductId(Long.valueOf(1));
+        device.setProjectId(projectId);
         Device result=deviceService.createDevice(device);
         return device;
     }
@@ -60,6 +59,7 @@ public class DeviceController {
         System.out.println(deviceId);
         Device device=deviceService.getSingleDevice(deviceId);
         device.setDeviceState("下线");
+        connectFeignService.disconnect(deviceId);
         return deviceService.updateDevice(device);
     }
 
@@ -110,4 +110,6 @@ public class DeviceController {
     public Device getSingleDeviceByName(@PathParam("deviceName")String deviceName){
         return deviceService.getSingleDevice(deviceName);
     }
+
+
 }
