@@ -1,15 +1,13 @@
 package org.tze.connectservice.controller;
 
 import org.eclipse.paho.client.mqttv3.internal.wire.MqttDisconnect;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.tze.connectservice.feign.feignEntity.Device;
 import org.tze.connectservice.server.adapter.MqttMsgBack;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @Author: WangMo
@@ -30,8 +28,10 @@ public class Connectcontroller {
     }
 
     @RequestMapping(value = "/connect/sendMsg",method = RequestMethod.POST)
-    public void sendMsg(@RequestParam("topicName") String topicName,@RequestParam("msg")String msg){
-        MqttMsgBack.serverSendMsg2Clinet(topicName,msg,-1);
+    public String sendMsg(@RequestBody Map msg){
+        System.out.println(msg.get("topicName"));
+        MqttMsgBack.serverSendMsg2Clinet((String)msg.get("topicName"),(String)msg.get("msg"),-1);
+        return "success";
     }
 
     @RequestMapping(value = "/connect/disconnect",method = RequestMethod.POST)

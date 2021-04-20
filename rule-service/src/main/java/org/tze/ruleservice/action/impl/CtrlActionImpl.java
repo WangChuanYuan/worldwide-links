@@ -33,8 +33,10 @@ public class CtrlActionImpl implements RuleAction {
         }
 
         JSONObject paramsJson = new JSONObject();
-        paramsJson.put("topicName", fact.get("deviceId"));
+        paramsJson.put("topicName", String.valueOf((Integer) fact.get("deviceId")));
         paramsJson.put("msg", cmd.toString());
-        restTemplate.postForObject(url, paramsJson, Void.class);
+        System.out.println(fact.get("deviceId"));
+        System.out.println(cmd.toString());
+        restTemplate.postForObject(url, paramsJson, String.class);
     }
 }
