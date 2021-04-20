@@ -47,8 +47,8 @@ public class ProductController {
         return transferProduct(productService.getSingleProduct(productId));
     }
 
-    @RequestMapping(value = "/product/getProductByProductId/{projectId}",method = RequestMethod.GET)
-    public List<ProductVO> getSingleProductByProductId(@PathVariable("projectId")Long projectId){
+    @RequestMapping(value = "/product/getProductByProjectId/{projectId}",method = RequestMethod.GET)
+    public List<ProductVO> getSingleProductByProjectId(@PathVariable("projectId")Long projectId){
         List<ProductVO>result=new ArrayList<>();
         for(Product productService :productService.getProductByProjectId(projectId)){
             result.add(transferProduct(productService));
