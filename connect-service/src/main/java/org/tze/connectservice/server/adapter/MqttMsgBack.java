@@ -61,8 +61,17 @@ public class MqttMsgBack {
         System.out.println("username: "+userName);
 
         Device device=mqttMsgBack.deviceFeignService.deviceLogin(Long.parseLong(userName),password);
+        //Device device=null;
         if(device==null){
             System.out.println("Device Login Failed!");
+            //	构建返回报文， 可变报头
+            MqttConnAckVariableHeader mqttConnAckVariableHeaderBack = new MqttConnAckVariableHeader(MqttConnectReturnCode.CONNECTION_REFUSED_BAD_USER_NAME_OR_PASSWORD, mqttConnectVariableHeaderInfo.isCleanSession());
+            //	构建返回报文， 固定报头
+            MqttFixedHeader mqttFixedHeaderBack = new MqttFixedHeader(MqttMessageType.CONNACK,mqttFixedHeaderInfo.isDup(), MqttQoS.AT_MOST_ONCE, mqttFixedHeaderInfo.isRetain(), 0x02);
+            //	构建CONNACK消息体
+            MqttConnAckMessage connAck = new MqttConnAckMessage(mqttFixedHeaderBack, mqttConnAckVariableHeaderBack);
+            log.info("back--"+connAck.toString());
+            channel.writeAndFlush(connAck);
             return;
         }
 
