@@ -34,9 +34,9 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public Product getSingleProduct(String productName) {
+    public Product getSingleProduct(Long productId) {
         try{
-            return productDAO.getProductByProductName(productName);
+            return productDAO.findById(productId).orElse(null);
         }catch (Exception e){
             throw new RuntimeException(e.toString());
         }
