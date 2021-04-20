@@ -3,6 +3,7 @@ package org.tze.connectservice.server.adapter;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.Channel;
 import io.netty.handler.codec.mqtt.*;
+import org.eclipse.paho.client.mqttv3.internal.wire.MqttDisconnect;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +28,7 @@ public class MqttMsgBack {
 
     static ConcurrentHashMap<String,Set<Channel>> chm=new ConcurrentHashMap<>();
     public static ConcurrentHashMap<Channel,Device> connectChannel=new ConcurrentHashMap<>();
+    static ConcurrentHashMap<Long,Channel> deviceIdMap=new ConcurrentHashMap<>();
 
     @Autowired
     DeviceFeignService deviceFeignService;
@@ -64,7 +66,11 @@ public class MqttMsgBack {
             return;
         }
 
+/*        Device device=new Device();
+        device.setDeviceId(1L);*/
+
         connectChannel.put(channel,device);
+        deviceIdMap.put(device.getDeviceId(),channel);
         //	构建返回报文， 可变报头
         MqttConnAckVariableHeader mqttConnAckVariableHeaderBack = new MqttConnAckVariableHeader(MqttConnectReturnCode.CONNECTION_ACCEPTED, mqttConnectVariableHeaderInfo.isCleanSession());
         //	构建返回报文， 固定报头
@@ -298,6 +304,37 @@ public class MqttMsgBack {
                 sendMsg2Client(channel1, topic, msgID, msg);
             }
         }
+    }
+
+    public static boolean disconnect(Long deviceId){
+        Channel channel=deviceIdMap.get(deviceId);
+        deviceIdMap.remove(deviceId);
+        if(channel!=null){
+            System.out.println("断开连接："+deviceId);
+            MqttFixedHeader Header = new MqttFixedHeader(
+                    MqttMessageType.DISCONNECT, true,
+                    MqttQoS.AT_MOST_ONCE, false, 0);
+
+
+            MqttMessage disconnectMessage = new MqttMessage(
+                    Header);
+
+            try {
+                System.out.println(disconnectMessage.toString());
+                channel.writeAndFlush(disconnectMessage);
+            }
+            catch (Exception e){
+                return false;
+            }finally {
+                connectChannel.remove(channel);
+                channel.close();
+            }
+
+            return true;
+        }
+
+
+        return true;
     }
 }
 
