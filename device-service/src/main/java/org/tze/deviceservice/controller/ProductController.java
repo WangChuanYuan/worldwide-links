@@ -1,7 +1,6 @@
 package org.tze.deviceservice.controller;
 
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -42,10 +41,10 @@ public class ProductController {
         return result;
     }
 
-    @RequestMapping(value = "/product/getProductByProductName",method = RequestMethod.GET)
-    public ProductVO getSingleProductByProductName(@RequestParam("productName")String productName){
+    @RequestMapping(value = "/product/getProductByProductId",method = RequestMethod.GET)
+    public ProductVO getSingleProductByProductName(@RequestParam("productId")Long productId){
 
-        return transferProduct(productService.getSingleProduct(productName));
+        return transferProduct(productService.getSingleProduct(productId));
     }
 
     @RequestMapping(value = "/product/updateProduct",method = RequestMethod.POST)
@@ -70,11 +69,9 @@ public class ProductController {
         productVO.setProductId(product.getProductId());
         productVO.setProductName(product.getProductName());
         productVO.setEnabled(product.isEnabled());
-        List<ModelPro> modelPros=new ArrayList<>();
-        modelPros= JSONObject.parseArray(product.getModelPro(),ModelPro.class);
+        List<ModelPro> modelPros=JSONObject.parseArray(product.getModelPro(),ModelPro.class);
         productVO.setModelPro(modelPros);
-        List<ModelServe> modelServes=new ArrayList<>();
-        modelPros= JSONObject.parseArray(product.getModelServe(),ModelPro.class);
+        List<ModelServe> modelServes=JSONObject.parseArray(product.getModelServe(),ModelServe.class);
         List<ModelServeVO> modelServeVOS=new ArrayList<>();
         for(ModelServe modelServe:modelServes){
           modelServeVOS.add(transferModelServe(modelServe));
@@ -89,13 +86,12 @@ public class ProductController {
         modelServeVO.setId(modelServe.getId());
         modelServeVO.setIdentifier(modelServe.getIdentifier());
         modelServeVO.setName(modelServe.getName());
-        List<ModelPro> modelPros=new ArrayList<>();
-        modelPros= JSONObject.parseArray(modelServe.getParams(),ModelPro.class);
+        List<ModelPro> modelPros= JSONObject.parseArray(modelServe.getParams(),ModelPro.class);
         modelServeVO.setParams(modelPros);
         return modelServeVO;
     }
 
-    private ModelServe trasnferModelServeVO(ModelServeVO modelServeVO){
+    private ModelServe transferModelServeVO(ModelServeVO modelServeVO){
         ModelServe modelServe=new ModelServe();
         modelServe.setDescription(modelServeVO.getDescription());
         modelServe.setIdentifier(modelServeVO.getIdentifier());
