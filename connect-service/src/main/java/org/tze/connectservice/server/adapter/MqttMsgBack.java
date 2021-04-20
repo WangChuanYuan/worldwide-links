@@ -7,6 +7,7 @@ import org.eclipse.paho.client.mqttv3.internal.wire.MqttDisconnect;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.tze.connectservice.feign.feignEntity.Device;
 import org.tze.connectservice.feign.feignService.DeviceFeignService;
 import org.tze.connectservice.feign.feignService.RuleFeignService;
@@ -21,7 +22,7 @@ import java.util.stream.Collectors;
  * @Description: 对MQTT客户端发送消息后，处理的返回消息，基于MQTT协议的，需要MQTT协议的主要内容
  */
 
-
+@Component
 public class MqttMsgBack {
 
     private static Logger log =  LoggerFactory.getLogger(MqttMsgBack.class);
@@ -41,6 +42,7 @@ public class MqttMsgBack {
     public void init(){
         mqttMsgBack=this;
         mqttMsgBack.deviceFeignService =this.deviceFeignService;
+        mqttMsgBack.ruleFeignService=this.ruleFeignService;
     }
 
 

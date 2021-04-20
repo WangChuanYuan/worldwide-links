@@ -16,13 +16,11 @@ public class DeviceFeignService {
     @Autowired
     DeviceFeignClient deviceFeignClient;
 
-    @HystrixCommand(fallbackMethod = "deviceLoginFallbackMethod")
+
     public Device deviceLogin(Long deviceId, String devicePw){
+        System.out.println(deviceId+" " +devicePw);
         return deviceFeignClient.deviceLogin(deviceId,devicePw);
     }
 
-    public Device deviceLoginFallbackMethod(long coachId){
-        System.out.println("设备微服务--登录接口调用失败");
-        return null;
-    }
+
 }

@@ -19,12 +19,9 @@ public class RuleFeignService {
     @Autowired
     RuleFeignClient ruleFeignClient;
 
-    @HystrixCommand(fallbackMethod = "executeFallbackMethod")
+
     public void execute(Long projectId,Map params){
         ruleFeignClient.execute(projectId,params);
     }
 
-    public void executeFallbackMethod(Long projectId,Map params){
-        System.out.println("规则引擎微服务--excute接口调用");
-    }
 }
