@@ -29,14 +29,16 @@ public class CtrlActionImpl implements RuleAction {
         StringBuilder cmd = new StringBuilder(methodName);
         cmd.append(" ");
         for (Map.Entry<String, Object> args : params.entrySet()) {
-            cmd.append("--").append(args.getKey()).append(" ").append(args.getValue()).append(" ");
+            String key = args.getKey();
+            if (key.equals("ruleId") || key.equals("ruleName")
+                    || key.equals("projectId") || key.equals("productId") || key.equals("deviceId"))
+                continue;
+            cmd.append("--").append(key).append(" ").append(args.getValue()).append(" ");
         }
 
         JSONObject paramsJson = new JSONObject();
         paramsJson.put("topicName", String.valueOf((Integer) fact.get("deviceId")));
         paramsJson.put("msg", cmd.toString());
-        System.out.println(fact.get("deviceId"));
-        System.out.println(cmd.toString());
         restTemplate.postForObject(url, paramsJson, String.class);
     }
 }
