@@ -1,11 +1,18 @@
 package org.tze.deviceservice.controller;
 
+import com.alibaba.fastjson.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.tze.deviceservice.VO.ModelServeVO;
+import org.tze.deviceservice.VO.ProductVO;
 import org.tze.deviceservice.entity.Device;
+import org.tze.deviceservice.entity.ModelPro;
+import org.tze.deviceservice.entity.ModelServe;
+import org.tze.deviceservice.entity.Product;
 import org.tze.deviceservice.service.DeviceService;
 
 import javax.websocket.server.PathParam;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -19,9 +26,7 @@ public class DeviceController {
     @RequestMapping(value = "/device/create/{projectId}",method = RequestMethod.POST)
     public Device createDevice(@RequestBody Device device,@PathVariable Long projectId){
         System.out.println("接口调用"+device.toString());
-        device.setProductId(projectId);
-        device.setProjectId(Long.valueOf(1));
-        device.setProductId(Long.valueOf(1));
+        device.setProjectId(projectId);
         Device result=deviceService.createDevice(device);
         return device;
     }
@@ -110,4 +115,6 @@ public class DeviceController {
     public Device getSingleDeviceByName(@PathParam("deviceName")String deviceName){
         return deviceService.getSingleDevice(deviceName);
     }
+
+
 }

@@ -5,10 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 @Data
 @Accessors(chain = true)
@@ -21,6 +18,7 @@ public class ModelServe {
     private Long id;
     private String identifier;
     private String name;
-    private String callType;
+    @Lob
+    private String params ;//参数
     private String description;
 }

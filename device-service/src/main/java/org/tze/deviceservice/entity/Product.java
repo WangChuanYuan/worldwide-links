@@ -6,10 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 @Data
 @Accessors(chain = true)
@@ -26,7 +23,9 @@ public class Product {
     private String productName;
     private String description;
     private boolean enabled;
+    @Lob
     private String modelServe;
+    @Lob
     private String modelPro;
 
 
