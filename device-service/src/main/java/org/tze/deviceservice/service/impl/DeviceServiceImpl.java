@@ -94,8 +94,15 @@ public class DeviceServiceImpl implements DeviceService {
     @Override
     public Device deviceLogin(Long deviceId, String password) {
         try {
-            return deviceDAO.getDeviceByDeviceIdAndPassword(deviceId,password);
+            Device device=deviceDAO.getDeviceByDeviceIdAndPassword(deviceId,password);
+            if(device!=null) {
+                System.out.println("设备上线："+device.getDeviceId());
+                device.setDeviceState("上线");
+                deviceDAO.saveAndFlush(device);
+            }
+            return device;
         }catch (Exception e) {
+
             throw new RuntimeException("获取失败:" + e.toString());
         }
     }
